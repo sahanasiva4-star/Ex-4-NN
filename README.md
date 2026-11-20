@@ -1,8 +1,8 @@
 
-<H3>ENTER YOUR NAME</H3>
-<H3>ENTER YOUR REGISTER NO.</H3>
+<H3>ENTER YOUR NAME: SAHANA S </H3>
+<H3>ENTER YOUR REGISTER NO. 212225230236</H3>
 <H3>EX. NO.4</H3>
-<H3>DATE:</H3>
+<H3>DATE: 20/11/26</H3>
 <H1 ALIGN =CENTER>Implementation of MLP with Backpropagation for Multiclassification</H1>
 <H3>Aim:</H3>
 To implement a Multilayer Perceptron for Multi classification
@@ -116,11 +116,94 @@ Normalize our dataset.
 
 <H3>Program:</H3> 
 
-Insert your code here
+```python
+import pandas as pd
+import sklearn
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/00236/seeds_dataset.txt'
+
+names = [
+    'Area',
+    'Perimeter',
+    'Compactness',
+    'Length_of_kernel',
+    'Width_of_kernel',
+    'Asymmetry_coefficient',
+    'Length_of_kernel_groove',
+    'Class'
+]
+
+seedsdata = pd.read_csv(url, sep=r'\s+', header=None, names=names)
+
+print(seedsdata.head())
+
+X = seedsdata.iloc[:, 0:7]
+
+y = seedsdata[['Class']].copy()
+
+y['Class'] = y['Class'].map({
+    1: 'Kama',
+    2: 'Rosa',
+    3: 'Canadian'
+})
+
+print(X.head())
+print(y.head())
+
+print(y.Class.unique())
+
+le = preprocessing.LabelEncoder()
+
+y = y.apply(le.fit_transform)
+
+print(y.head())
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42,
+    stratify=y
+)
+
+scaler = StandardScaler()
+
+scaler.fit(X_train)
+
+X_train = scaler.transform(X_train)
+
+X_test = scaler.transform(X_test)
+
+mlp = MLPClassifier(
+    hidden_layer_sizes=(10, 10, 10),
+    max_iter=1000,
+    random_state=42
+)
+
+mlp.fit(X_train, y_train.values.ravel())
+
+predictions = mlp.predict(X_test)
+
+print(predictions)
+
+print(confusion_matrix(y_test, predictions))
+
+print(
+    classification_report(
+        y_test,
+        predictions,
+        target_names=le.classes_
+    )
+)
+```
 
 <H3>Output:</H3>
-
-Show your results here
+<img width="652" height="1030" alt="image" src="https://github.com/user-attachments/assets/e6f37fb2-bcbe-4acd-b968-15eddc879bbf" />
 
 <H3>Result:</H3>
 Thus, MLP is implemented for multi-classification using python.
